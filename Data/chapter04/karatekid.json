@@ -1,0 +1,37 @@
+[
+  {
+    "studentId": 1001,
+    "name": "Daniel",
+    "score": 80,
+    "surname": "LaRusso",
+    "course": "Math"
+  },
+  {
+    "studentId": 1001,
+    "name": "Daniel",
+    "score": 85,
+    "surname": "LaRusso",
+    "course": "Physics"
+  },
+  {
+    "studentId": 1001,
+    "name": "Daniel",
+    "score": 90,
+    "surname": "LaRusso",
+    "course": "Computer Science"
+  },
+  {
+    "studentId": 1001,
+    "name": "Daniel",
+    "score": 95,
+    "surname": "LaRusso",
+    "course": "Chemistry"
+  },
+  {
+    "studentId": 1001,
+    "name": "Daniel",
+    "score": 100,
+    "surname": "LaRusso",
+    "course": "Gym"
+  }
+]

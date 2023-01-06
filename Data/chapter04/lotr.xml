@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lotr><movie><order>1</order><name>The Fellowship of the Ring</name><year>2001</year><rating source="IMDB">8.8</rating></movie><movie><order>2</order><name>The Two Towers</name><year>2002</year><rating source="IMDB">8.8</rating></movie><movie><order>3</order><name>The Return of The King</name><year>2003</year><rating source="IMDB">9.0</rating></movie></lotr>
