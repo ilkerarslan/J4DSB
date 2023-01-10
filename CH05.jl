@@ -181,3 +181,8 @@ using Statistics
 medianImpute(v) = [ismissing(el) ? median(skipmissing(v)) : el for el in v] 
 
 data.lastCreditUsageDate = medianImpute(data.lastCreditUsageDate)
+
+# Outliers
+
+data |> describe |> df -> show(df, allrows=true)
+
