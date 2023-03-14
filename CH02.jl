@@ -1,3 +1,8 @@
+subtypes(Any)
+supertype(Number)
+subtypes(Number)
+subtypes(Complex)
+
 abstract type Shape end
 
 struct Rectangle 
@@ -8,12 +13,6 @@ end
 rectangle1 = Rectangle(4.0,7.0)
 rectangle1.width, rectangle1.height
 
-mutable struct Rectangle 
-    width::Float64
-    height::Float64     
-end
-
-
 mutable struct NewRectangle 
     width::Float64
     height::Float64     
@@ -22,11 +21,25 @@ end
 rectangle2 = NewRectangle(10, 30)
 rectangle2.width = 20
 
+mutable struct Prism <: Shape
+    width::Float64 
+    length::Float64
+    const height::Float64
+end
+
+prism1 = Prism(3.0, 4.0, 5.0)
+prism1.width = 3.5
+prism1.length = 4.5
+prism1.height = 6.0
+
 intstr = Union{Integer, String}
 x = 123; y = "123"; z = 3.0;
 x::intstr
 y::intstr
 z::intstr
+
+Integer <: Union{Integer, String, Float64}
+
 
 struct RectanglePar{T}
     width::T
@@ -139,6 +152,7 @@ size(mat, 1)
 size(mat, 2)
 length(mat)
 
+mat
 mat[1:2, 2:4]
 mat[2, :]
 

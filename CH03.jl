@@ -40,12 +40,46 @@ else
     end
 end
 
+if score ≥ 85
+    println("Your grade is A")
+elseif score ≥ 70
+    println("Your grade is B")
+elseif score ≥ 60
+    println("Your grade is C")
+else 
+    println("Your score is F")
+end
+
+println("Enter your score: ")
+score = readline();
+score = parse(Int64, score)
+
+if 85 ≤ score ≤ 100
+    println("Your grade is A")
+elseif 70 ≤ score < 85
+    println("Your grade is B")
+elseif 60 ≤ score <70
+    println("Your grade is C")
+elseif 0 ≤ score < 60 
+    println("Your score is F")
+else
+    println("You haven't entered a valid score")
+end
+
+
+score > 50 ? "passed" : "failed"
+score > 85 ? "Grade: A" : score > 60 ? "Grade: B" : "Grade C"
 
 age = 45
 (age > 0) && (println("Your age is $age."))
+(age < 0) || (println("Enter a positive number"))
 
-age = "45"
-(tryparse(Int, age) === nothing) || (age = parse(Int, age))
+age = "twenty"
+notInteger = !(typeof(age) <: Integer);
+notInteger && println("Please enter a numeric input!")
+
+
+
 
 begin
 print("Enter your age: ")
@@ -58,19 +92,11 @@ age = readline()
 (0 < age < 100) || (println("Please enter a number between 0 and 100!"))
 end
 
-age = "twenty"
-isInteger = (tryparse(Int, age) === nothing)
-isInteger && println("Please enter a numeric input!")
-
-
-(0 < age) || (println("Enter a positive number"))
-
 for i in 1:4
     println("Square of $i is $(i^2)")
 end
 
 arr = rand(5:25, 4);
-
 for (index, value) ∈ enumerate(arr)
     println("The $(index). element is $(value)")
 end
@@ -194,6 +220,11 @@ end
 
 f(x) = 3x^2 + 4x - 5
 
+f = x -> 3x^2 + 4x -5
+
+numbers = [3 4 7 8 9 12];
+newNumbers = map(x -> 3x^2 -2x, numbers)
+
 function mymax(array)
     maxnum = typemin(Int64)
     for num in array 
@@ -202,6 +233,22 @@ function mymax(array)
         end
     end
     return maxnum 
+end
+
+function absDiff(a,b)
+    if a > b
+        return a - b
+    else
+        return b - a 
+    end
+end
+
+function absDiff(a,b)
+    return if a > b 
+        a - b 
+    else
+        b - a
+    end
 end
 
 function greet()
@@ -286,7 +333,8 @@ f(x) = 3x^2 + 2x + 5
 f.(a)
 
 x = [3 5 7 9]
-x.^2 .+ 3 .* x .- 5
+x.^2 .+ 3x .- 5
+@. x^2 + 3x - 5
 
 
 vec = [7 22 12 13 16 21 18 76]
@@ -309,8 +357,10 @@ sqrt(sum((x .- sum(x)/length(x)).^2))
 
 (x .- sum(x)/length(x)) .^ 2 |> sum |> sqrt
 
-x = [35, 1, -7, 12, -11, -17];
 
+
+
+x = [35, 1, -7, 12, -11, -17];
 sort(x)
 x'
 
@@ -433,7 +483,6 @@ Base.@kwdef mutable struct CSStudent1
 end
 
 cs4 = CSStudent1(name="Laurance", studentId=454545)
-
 
 mutable struct MathStudent <: Student
     name::String 
