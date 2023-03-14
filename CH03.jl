@@ -13,7 +13,6 @@ end
  println("Volume = $v and Area = $a"))
 
 score = 70
-
 if score > 60 
    println("passed")
 end
@@ -25,7 +24,6 @@ else
 end
 
 score = 45
-
 if score ≥ 85
     println("Your grade is A")
 else
@@ -66,31 +64,16 @@ else
     println("You haven't entered a valid score")
 end
 
-
+score = 78;
 score > 50 ? "passed" : "failed"
 score > 85 ? "Grade: A" : score > 60 ? "Grade: B" : "Grade C"
 
 age = 45
 (age > 0) && (println("Your age is $age."))
 (age < 0) || (println("Enter a positive number"))
-
 age = "twenty"
 notInteger = !(typeof(age) <: Integer);
 notInteger && println("Please enter a numeric input!")
-
-
-
-
-begin
-print("Enter your age: ")
-age = readline()
-#age = parse(Int, age)
-(tryparse(Int, age) === nothing) && (println("Please enter a numeric input!"))
-(tryparse(Int, age) === nothing) || (age = parse(Int, age))
-
-(0 < age < 100) && (println("Your age is $age."))
-(0 < age < 100) || (println("Please enter a number between 0 and 100!"))
-end
 
 for i in 1:4
     println("Square of $i is $(i^2)")
@@ -202,10 +185,6 @@ sqarr = [x^2 for x in arr]
 
 [(i,j) for i=1:4 for j=1:i]
 
-(x^2 for x ∈ 1:1000)
-
-sum(x^2 for x ∈ 1:1000)
-
 s = 0;
 @time for i = 1:1_000_000_000 s += i^2 end
 
@@ -220,7 +199,7 @@ end
 
 f(x) = 3x^2 + 4x - 5
 
-f = x -> 3x^2 + 4x -5
+g = x -> 3x^2 + 4x -5
 
 numbers = [3 4 7 8 9 12];
 newNumbers = map(x -> 3x^2 -2x, numbers)
@@ -257,32 +236,14 @@ function greet()
 end
 greet()
 
-ϕ(x,y) = x^y
-ϕ(3,4)
+Φ(x,y) = x^y
+Φ(3,4)
 
-function fact(n::Integer) 
-    f = 1
-    for i ∈ 1:n 
-        f *= i
-    end
-    return f 
-end
-
-function absDiff(a,b)
-    if a > b 
-        return a - b 
-    else
-        return b - a
-    end
-end
+phi = Φ
+phi(3,4)
 
 function ratio(x::Int64, y::Int64)::Rational
     return x//y
-end
-
-mutable struct Circle 
-    r::Float64 
-    const pi::Float64 
 end
 
 function find_mean_sd(arr)
@@ -295,14 +256,12 @@ array = [4, 5, 6, 8, 12, 34, 65, 98, 76, 36, 35];
 μ, σ = find_mean_sd(array)
 result = find_mean_sd(array)
 
+pow(x, y=2) = x^y
+pow(9)
+
 function printall(x...) println(x) end
 printall("Julia")
 printall("Julia", "Python", "R")
-
-addall(x, y...) = x + addall(y...)
-
-pow(x, y=2) = x^y 
-pow(9)
 
 position_args(x, y=10, z=20) = println("x = $x, y = $y, z = $z")
 position_args(1)
@@ -311,6 +270,8 @@ position_args(1, z=3)
 
 keyword_args(x; y=10, z=20) = println("x = $x, y = $y, z = $z")
 keyword_args(1, z=3, y=2)
+keyword_args(; x, y) = println("x = $x and y = $y")
+
 
 v = Vector(1:5);
 n = 7;
@@ -327,22 +288,18 @@ b = [3 7 3 9 12 15];
 a == b
 a .== b
 
-exp.(a)
-
-f(x) = 3x^2 + 2x + 5
-f.(a)
-
 x = [3 5 7 9]
 x.^2 .+ 3x .- 5
 @. x^2 + 3x - 5
 
+f(x) = 3x^2 + 2x + 5
+f.(a)
 
 vec = [7 22 12 13 16 21 18 76]
 vec[ vec .> 20]
 
 x = rand(-10:10, 20);
 square(x) = x .^ 2;
-
 sum(square(x))
 
 (sum ∘ square)(x)
@@ -357,8 +314,8 @@ sqrt(sum((x .- sum(x)/length(x)).^2))
 
 (x .- sum(x)/length(x)) .^ 2 |> sum |> sqrt
 
-
-
+f(x,y) = x^y - x*y + 5x - 3y
+4 |> a -> f(3, a)
 
 x = [35, 1, -7, 12, -11, -17];
 sort(x)
@@ -381,12 +338,10 @@ function padwithzero!(vec, n)
     for i in 1:n append!(vec, 0) end
 end
 
-
 padwithzero!(x, 2)
 x'
 
 *
-
 methods(*)
 
 f(x::Float64, y::Float64) = x^2 + y^2
@@ -398,17 +353,19 @@ f(7.0, 4)
 f(x, y) = "I couldn't find a correct method."
 f("abc", 5.0)
 
-g(x::Int64, y) = x * y
-g(x, y::Int64) = x / y
-g(4, 4.5)
-g(4.5, 4)
-g(4, 5)
-g(x::Int64, y::Int64) = x + y
+h(x::Int64, y) = x * y
+h(x, y::Int64) = x / y
+h(4, 4.5)
+h(4.5, 4)
+h(4, 5)
 
-h(x=3, y=4) = x + y
-h()
-h(x::Int, y::Int) = x - y
-h()
+h(x::Int64, y::Int64) = x + y
+
+myfunc(x=3, y=4) = x + y
+myfunc()
+myfunc(x::Int, y::Int) = x - y
+myfunc()
+
 
 compare_types(x::T, y::T) where {T} = "Arguments have the same type"
 compare_types(4, 5)
@@ -435,13 +392,28 @@ end
 area(s::Circle) = π * s.radius^2
 area(s::Rectangle) = s.width * s.height
 
-function *(s::String, n::Integer)
-    res = ""
-    for i in 1:n
-        res = res * s 
-    end
-    return res 
-end 
+mutable struct Model{R <: Real}
+    β₀::R
+    β::Vector{R}    
+end
+
+function (m::Model)(x)    
+    yhat = m.β₀ + sum(x[i]*m.β[i] for i ∈ 1:length(x))
+    return yhat 
+end
+
+lm = Model(2.0, [3.2, 5.4, 7.5])
+
+x = [2, 4, 6];
+lm(x)
+
+function (m::Model)(x, y)
+    yhat = m(x)
+    se = (y - yhat)^2
+    return se 
+end
+
+lm(x, 75.5)
 
 abstract type Student end
 
@@ -526,40 +498,3 @@ mutable struct PhysStudent <: Student
 end
 
 ps1 = PhysStudent()
-
-mutable struct Model{R <: Real}
-    β₀::R
-    β::Vector{R}    
-end
-
-function (m::Model)(x)    
-    yhat = m.β₀ + sum(x[i]*m.β[i] for i ∈ 1:length(x))
-    return yhat 
-end
-
-lm = Model(2.0, [3.2, 5.4, 7.5])
-
-x = [2, 4, 6];
-lm(x)
-
-function (m::Model)(x, y)
-    yhat = m(x)
-    se = (y - yhat)^2
-    return se 
-end
-
-lm(x, 75.5)
-
-using Plots
-gr()
-
-a = -0.2;
-xₜ(t) = a + cos(t)
-yₜ(t) = a*tan(t) + sin(t)
-plot(xₜ, yₜ, 0, 2π, leg=false, xlim=(-4,4), ylim=(-4,4))
-
-function sum_n(n)
-    sum(x for x in 1:n)
-end
-@time sum_n(1_000_000_000)
-

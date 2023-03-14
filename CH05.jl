@@ -71,7 +71,7 @@ coltypes = DataFrame(column=names(data),
 datecond = coltypes.type .∈ Ref([Date, Union{Missing, Date}])
 datecols = coltypes[datecond, :]
 
-strcond = (coltypes.type .<: AbstractString) .| (coltypes.type .<: Union{Missing, AbstractString})
+strcond = (coltypes.type .<: AbstractString) .| (coltypes.type .<: Union{Missing, AbstractString});
 strcols = coltypes[strcond, :]
 
 diff = data.appDate .- data.latestCreditLineDate
@@ -87,10 +87,9 @@ end
 
 data[!, r"Date"]
 
-# String columns
-strcols
-
 # one-hot-encoding
+data.custSegment |> unique
+
 onehot = zeros(Int8, size(data,1))
 onehot[data[:, "custSegment"] .== "Micro"] .= 1; 
 data[!, "Micro"] = onehot;
@@ -109,8 +108,9 @@ function column2onehot!(df, colname)
 end
 
 column2onehot!(data, "custSegment")
+
 data[:, [:Micro, :Medium, :Commercial, :Corporate]]
-data[:, :custSegment]  # should throw an error.
+:custSegment ∈ names(data)
 
 # Label encoding
 column = data.creditRating;
@@ -131,7 +131,6 @@ select!(data, Not("creditRating"))
 # Summarize Data
 
 # Numerical columns
-data
 describe(data)
 
 show(describe(data), allrows=true)
@@ -150,20 +149,19 @@ combine(groupby(data, :exceptionCategory), nrow => :Freq)
 data[:, r"Date"] |> x -> describe(x, :min, :median, :max)
 cols2replace = [:latestCreditLineDate, :firstCreditUsageDate, :lastCreditUsageDate]
 
-neg2missing(x) = ismissing(x) ? missing : (x < 0 ? missing : x)
-
 for col in cols2replace
-    data[!, col] = data[!, col] .|> neg2missing
-end 
+    data[isless.(data[:, col],0), col] .= missing 
+end
 
-data[:, cols2replace] |> x -> describe(x, :min, :median, :max)
+data[:, cols2replace] |> x -> describe(x, :min, :median, :max, :nmissing)
 
 # Missing Values
 data[completecases(data), :]
 
-missingvals = (describe(data)[:, [:variable, :nmissing]])
-missingvals = subset(missingvals, :nmissing => x -> x .> 0) 
-transform!(missingvals, :nmissing => (x -> x ./ nrow(data) .* 100) => :ratiomissing)
+df = describe(data)
+missingvals = df[df.nmissing .> 0, [:variable, :nmissing]]
+missingvals.ratiomissing = missingvals.nmissing ./ nrow(data) .* 100;
+missingvals
 
 lim = 90;
 cols2remove = missingvals[missingvals.ratiomissing .> lim, :variable]
@@ -171,14 +169,14 @@ select!(data, Not(cols2remove))
 
 condition = data[:, :unusedCheckCount] .|> !ismissing;
 data = data[condition, :]
-
 dropmissing!(data, :unusedCheckCount)
 
-missingvals = (describe(data)[:, [:variable, :nmissing]])
-missingvals = subset(missingvals, :nmissing => x -> x .> 0) 
-transform!(missingvals, :nmissing => (x -> x ./ nrow(data) .* 100) => :ratiomissing)
-
-data |> describe |> df -> subset(df, :nmissing => x -> x .> 0) |> df -> select(df, [:variable, :nmissing])
+data |> describe |> 
+        df -> subset(df, :nmissing => x -> x .> 0) |> 
+        df -> select(df, [:variable, :nmissing])  |>
+        df -> transform!(df, :nmissing => 
+                        (x -> x ./ nrow(data) .* 100) => 
+                        :ratiomissing)
 
 using Statistics
 medianImpute(v) = [ismissing(el) ? median(skipmissing(v)) : el for el in v] 
@@ -187,7 +185,7 @@ data.lastCreditUsageDate = medianImpute(data.lastCreditUsageDate)
 
 # Outliers
 
-describe(data.undueCheckCount)
+data[:, [:undueCheckCount]] |> describe
 
 using Plots, StatsPlots
 histogram(data.undueCheckCount, bins=:scott, legend=false)
@@ -199,7 +197,6 @@ iqr = q3 - q1
 max_thresh = q3 + 1.5 * iqr
 
 data[!, :undueCheckCount] = data[!, :undueCheckCount] .|> v -> (v > max_thresh ? max_thresh : v)
-
 
 # Standardize and Scale Data
 data |> describe |> df -> show(df, allrows=true)
@@ -219,8 +216,6 @@ describe(stnorm)
 
 stnorm = stnorm .|> x -> x < -3 ? -3 : (x > 3 ? 3 : x) 
 
-histogram(data.paidCheckAmount)
-
 minmaxscaler(x) = (x .- minimum(x)) ./ (maximum(x) - minimum(x))
 scaled = minmaxscaler(data.paidCheckAmount)
 describe(scaled)
@@ -237,7 +232,7 @@ for i ∈ 4:71
     data[!, i] = stdnormalizer(data[!, i])
 end
 
-describe(data, :detailed, ) |> df -> show(df, allrows=true)
+describe(data, :detailed) |> df -> show(df, allrows=true)
 
 # Find correlations
 using Statistics
@@ -286,8 +281,6 @@ extravars.var2 |> unique
 cols2remove = unique(extravars.var2)
 data = data[!, Not(cols2remove)]
 
-
-
 using DataFrames, Plots
 
 function split_to_bins(column::Symbol, n_bins::Int)
@@ -306,6 +299,7 @@ function split_to_bins(column::Symbol, n_bins::Int)
     plot(res.bin, res.default_mean, legend=false, title=column)
     scatter!(res.bin, res.default_mean, legend=false)
 end
+
 
 split_to_bins(:maxOverdueDays, 3)
 split_to_bins(:lastBounceDate, 4)

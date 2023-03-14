@@ -27,8 +27,6 @@ stata_df = DataFrame(stata.data, stata.headers)
 sas = read_sas7bdat("Data/chapter04/StatFiles/songLyrics.sas7bdat")
 sas_df = DataFrame(sas.data, sas.headers)
 
-
-
 ### HDF5
 using HDF5, DataFrames, CSV
 
@@ -60,7 +58,6 @@ attrs(group)
 group["count"] |> read
 
 hdf_df = DataFrame(singer = read(group["singer"]), word = read(group["word"]), count = read(group["count"]))
-
 hdf_df == df
 
 ### Reading From JSON Files
@@ -83,9 +80,7 @@ karatekidJSON = """
 typeof(karatekidJSON)
 
 using JSON, DataFrames
-
 karatekidDict = JSON.parse(karatekidJSON)
-
 karatekidDF = DataFrame(karatekidDict)
 
 scoresCol = karatekidDF[!, :scores]
@@ -96,11 +91,17 @@ score = [scoresCol[i]["score"] for i in eachindex(scoresCol)]
 karatekidDF[!, :course] = course
 karatekidDF[!, :score] = score
 select!(karatekidDF, Not(:scores))
-
 karatekidDF
 
 select!(karatekidDF, [:studentId, :name, :surname, :course, :score])
 karatekidDF
+
+d = Dict{String, Any}()
+df = karatekidDF;
+
+for col in names(karatekidDF)
+    d[col] = isnothing(df[!, col][1]) ? nothing : df[!, col][1]
+end
 
 function df_to_json(df::DataFrame)
     jsonVector = []
@@ -120,7 +121,6 @@ end
 
 jsonData = df_to_json(karatekidDF)
 write("Data/chapter04/karatekid.json", jsonData)
-
 
 songLyricsDF = CSV.read("Data/chapter04/songLyrics.csv", DataFrame)
 songLyricsJSON = df_to_json(songLyricsDF)
@@ -205,7 +205,7 @@ end
 write("Data/chapter04/songLyrics.xml", doc)
 
 using EzXML, DataFrames
-xmldoc = EzXML.readxml("Data/songLyrics.xml")
+xmldoc = EzXML.readxml("Data/chapter04/songLyrics.xml")
 xmlroot = xmldoc.root
 singerNodes = findall("//wordcount/singer", xmlroot)
 wordNodes = findall("//wordcount/word", xmlroot)
@@ -234,7 +234,7 @@ songLyrics
 
 # Relational Data Base Connection
 
-using ODBC
+using ODBC, DBInterface, DataFrames
 
 ODBC.drivers()
 

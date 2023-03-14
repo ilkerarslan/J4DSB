@@ -1,3 +1,6 @@
+pwd()
+cd("D:\\006 Julia for Data Science Bookcamp\\J4DSB")
+
 readdir()
 readdir("Data")
 mkdir("Data/chapter04/newsongs")
@@ -20,8 +23,6 @@ close(file)
 rm("Data/chapter04/newsongs/dayDreamer.txt")
 rm("Data/chapter04/newsongs/")
 
-
-
 ## SongLyrics
 using DataFrames
 
@@ -36,8 +37,7 @@ end
 function cleanText(text, remove)
     txt = join(text, " ")
     txt = replace.(txt, remove => " ") |> lowercase
-    txt = split(txt, " ")
-    txt = [el for el in txt if el != ""]
+    txt = split(txt)
     return txt 
 end
 
@@ -52,7 +52,6 @@ function addWordsToDict(text)
     word_counts = sort(collect(dict), by = x -> x[2], rev=true)
     return word_counts
 end
-
 
 function addToDF!(df; artist, wordVec)
     for n in eachindex(wordVec)
